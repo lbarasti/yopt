@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Yopt by lbarasti</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Yopt</h1>
+      <h2 class="project-tagline">A Scala inspired gem that introduces Options to Ruby while aiming for an idiomatic API</h2>
+      <a href="https://github.com/lbarasti/yopt" class="btn">View on GitHub</a>
+      <a href="https://github.com/lbarasti/yopt/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/lbarasti/yopt/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="yopt" class="anchor" href="#yopt" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Yopt</h1>
+
+<p>A <a href="http://www.scala-lang.org/api/current/index.html#scala.Option">Scala</a> inspired gem that introduces <code>Option</code>s to Ruby while aiming for an idiomatic API.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>yopt<span class="pl-pds">'</span></span></pre></div>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre><code>$ gem install yopt
+</code></pre>
+
+<h2>
+<a id="basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic usage</h2>
+
+<p>The Option type models the possible absence of a value. It lets us deal with the uncertainty related to such a value being there without having to resort to errors or conditional blocks.</p>
+
+<p>Instances of Option are either an instance of <code>Yopt::Some</code> - meaning the option contains a value - or the object <code>Yopt::None</code> - meaning the option is <em>empty</em>.</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>yopt<span class="pl-pds">'</span></span>
+
+some <span class="pl-k">=</span> <span class="pl-c1">Yopt</span>::<span class="pl-c1">Some</span>.<span class="pl-k">new</span>(<span class="pl-c1">42</span>)
+none <span class="pl-k">=</span> <span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span></pre></div>
+
+<p>We can access and manipulate the optional value by passing a block to <code>Option#map</code>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>some.map {|<span class="pl-smi">value</span>| value <span class="pl-k">+</span> <span class="pl-c1">2</span>} <span class="pl-c"># returns Some(44)</span>
+none.map {|<span class="pl-smi">value</span>| value <span class="pl-k">+</span> <span class="pl-c1">2</span>} <span class="pl-c"># returns None</span></pre></div>
+
+<p>When we are not interested in the result of a computation on the optional value, it is a good practice to use <code>Option#each</code> rather than <code>Option#map</code>. That will make our intention clearer.</p>
+
+<div class="highlight highlight-source-ruby"><pre>some.each {|<span class="pl-smi">value</span>| puts value} <span class="pl-c"># prints 42</span>
+none.each {|<span class="pl-smi">value</span>| puts value} <span class="pl-c"># does not print anything</span></pre></div>
+
+<p>We can safely retrieve the optional value by passing a default value to <code>Option#get_or_else</code></p>
+
+<div class="highlight highlight-source-ruby"><pre>some.get_or_else <span class="pl-c1">0</span> <span class="pl-c"># returns 42</span>
+none.get_or_else <span class="pl-c1">0</span> <span class="pl-c"># returns 0</span></pre></div>
+
+<p>We can also filter the optional value depending on how it evaluates against a block via <code>Option#select</code></p>
+
+<div class="highlight highlight-source-ruby"><pre>some.select {|<span class="pl-smi">value</span>| value <span class="pl-k">&lt;</span> <span class="pl-c1">0</span>} <span class="pl-c"># returns None</span>
+none.select {|<span class="pl-smi">value</span>| value <span class="pl-k">&lt;</span> <span class="pl-c1">0</span>} <span class="pl-c"># returns None</span>
+some.select {|<span class="pl-smi">value</span>| value <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>} <span class="pl-c"># returns Some(42)</span></pre></div>
+
+<p>We can easily turn any object into an Option by means of <code>Option.call</code> - aliased to <code>Option.[]</code> for convenience.
+For instance, this is useful when dealing with functions that might return <code>nil</code> to express the absence of a result.</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Yopt</span>::<span class="pl-c1">Option</span>[<span class="pl-c1">nil</span>] <span class="pl-c"># returns None</span>
+<span class="pl-c1">Yopt</span>::<span class="pl-c1">Option</span>[<span class="pl-c1">42</span>] <span class="pl-c"># returns Some(42)</span></pre></div>
+
+<p>A combination of the few methods just introduced already allows us to implement some pretty interesting logic. Checkout <code>basics.rb</code> in the docs folder to get some inspiration.</p>
+
+<h2>
+<a id="why-opt" class="anchor" href="#why-opt" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why opt?</h2>
+
+<p>Using <code>Option</code>s reduces the amount of branching in our code and lets us deal with exceptional cases in a seamless way. No more check-for-nil, no more <code>rescue</code> blocks, just plain and simple data transformation.</p>
+
+<p>It also makes our code safer by treating <em>the absence of something</em> like a fully fledged object, and enables us to use the Null Object Pattern everywhere we want without the overhead of having to write specialized Null-type classes for different classes.</p>
+
+<h2>
+<a id="advanced-usage" class="anchor" href="#advanced-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Advanced Usage</h2>
+
+<h3>
+<a id="reduce" class="anchor" href="#reduce" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>#reduce</h3>
+
+<p>Given an Option <code>opt</code>, a value <code>c</code> and a lambda <code>f</code>,</p>
+
+<pre><code>opt.reduce(c, &amp;f)
+</code></pre>
+
+<p>returns <code>c</code> if <code>opt</code> is <code>None</code>, and <code>f.(c, opt)</code> otherwise.</p>
+
+<p>This is a shortcut to</p>
+
+<pre><code>opt.map{|v| f.(c,v)}.get_or_else(c)`
+</code></pre>
+
+<h3>
+<a id="flatten-and-flat_map" class="anchor" href="#flatten-and-flat_map" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>#flatten and #flat_map</h3>
+
+<p>When working with functions returning <code>Option</code>, we might end up dealing with nested options...</p>
+
+<div class="highlight highlight-source-ruby"><pre>maybe_sqrt <span class="pl-k">=</span> lambda {|<span class="pl-smi">x</span>| <span class="pl-c1">Yopt</span>::<span class="pl-c1">Option</span>[x <span class="pl-k">&gt;=</span> <span class="pl-c1">0</span> <span class="pl-k">?</span> <span class="pl-c1">Math</span>.sqrt(x) : <span class="pl-c1">nil</span>]}
+maybe_increment <span class="pl-k">=</span> lambda {|<span class="pl-smi">x</span>| <span class="pl-c1">Yopt</span>::<span class="pl-c1">Option</span>[x <span class="pl-k">&gt;</span> <span class="pl-c1">1</span>  <span class="pl-k">?</span> x <span class="pl-k">+</span> <span class="pl-c1">1</span> : <span class="pl-c1">nil</span>]}
+
+maybe_sqrt.(<span class="pl-c1">4</span>).map {|<span class="pl-smi">v</span>| maybe_increment.(v)} <span class="pl-c"># Some(Some(3.0))</span>
+maybe_sqrt.(<span class="pl-c1">1</span>).map {|<span class="pl-smi">v</span>| maybe_increment.(v)} <span class="pl-c"># Some(None)</span></pre></div>
+
+<p>Usually, this is not what we want, so we call <code>Option#flatten</code> on the result</p>
+
+<div class="highlight highlight-source-ruby"><pre>maybe_sqrt.(<span class="pl-c1">4</span>).map {|<span class="pl-smi">v</span>| maybe_increment.(v)}.flatten <span class="pl-c"># Some(3.0)</span>
+maybe_sqrt.(<span class="pl-c1">1</span>).map {|<span class="pl-smi">v</span>| maybe_increment.(v)}.flatten <span class="pl-c"># None</span></pre></div>
+
+<p><code>Option#flat_map</code> combines the two calls into one</p>
+
+<div class="highlight highlight-source-ruby"><pre>maybe_sqrt.(<span class="pl-c1">4</span>).flat_map {|<span class="pl-smi">v</span>| maybe_increment.(v)} <span class="pl-c"># Some(3.0)</span>
+maybe_sqrt.(<span class="pl-c1">1</span>).flat_map {|<span class="pl-smi">v</span>| maybe_increment.(v)} <span class="pl-c"># None</span></pre></div>
+
+<p>A difference to keep in mind is that <code>#flatten</code> will raise an error if the wrapped value does not respond to <code>#to_ary</code></p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Yopt</span>.<span class="pl-c1">Option</span>[<span class="pl-c1">42</span>].flatten <span class="pl-c"># raises TypeError: Argument must be an array-like object. Found Fixnum</span></pre></div>
+
+<p>whereas #flat_map behaves like #map when the passed block does not return an array-like value</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Yopt</span>.<span class="pl-c1">Option</span>[<span class="pl-c1">42</span>].flat_map{|<span class="pl-smi">v</span>| v} <span class="pl-c"># returns Some(42)</span></pre></div>
+
+<h3>
+<a id="zip" class="anchor" href="#zip" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>#zip</h3>
+
+<p>When dealing with a set of <code>Option</code> instances, we might want to ensure that they are all defined - i.e. not <strong>empty</strong> - before continuing a computation...</p>
+
+<div class="highlight highlight-source-ruby"><pre>email_opt.each(<span class="pl-k">&amp;</span>send_pass_recovery) <span class="pl-k">unless</span> (email_opt.empty? <span class="pl-k">or</span> captcha_opt.empty?)</pre></div>
+
+<p>We can avoid <code>empty?</code> checks by using <code>Option#zip</code></p>
+
+<div class="highlight highlight-source-ruby"><pre>email_opt.zip(captcha_opt).each{|(<span class="pl-smi">email</span>,<span class="pl-smi">_</span>)| send_pass_recovery(email)}</pre></div>
+
+<p><code>Option#zip</code> returns <code>None</code> if any of the arguments is <code>None</code> or if the caller is <code>None</code></p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span>.zip <span class="pl-c1">Option</span>.[<span class="pl-c1">42</span>] <span class="pl-c"># None</span>
+<span class="pl-c1">Option</span>.[<span class="pl-c1">42</span>].zip <span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span> <span class="pl-c"># None</span>
+<span class="pl-c1">Option</span>.[<span class="pl-c1">42</span>].zip <span class="pl-c1">Option</span>.[<span class="pl-c1">0</span>], <span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span>, <span class="pl-c1">Option</span>.[<span class="pl-k">-</span><span class="pl-c1">1</span>] <span class="pl-c"># None</span></pre></div>
+
+<p>When both the caller and all the arguments are defined then <code>zip</code> collects all the values in an Array wrapped in a <code>Yopt::Some</code></p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Option</span>.[<span class="pl-c1">42</span>].zip <span class="pl-c1">Option</span>.[<span class="pl-c1">0</span>], <span class="pl-c1">Option</span>.[<span class="pl-s"><span class="pl-pds">"</span>str<span class="pl-pds">"</span></span>] <span class="pl-c"># Some([42, 0, "str"])</span></pre></div>
+
+<h3>
+<a id="grep" class="anchor" href="#grep" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>#grep</h3>
+
+<p>We often find ourselves filtering data before applying a transformation...</p>
+
+<div class="highlight highlight-source-ruby"><pre>opt.filter {|<span class="pl-smi">v</span>| (<span class="pl-c1">1</span>...<span class="pl-c1">10</span>).include? v}.map {|<span class="pl-smi">v</span>| v <span class="pl-k">+</span> <span class="pl-c1">1</span>}</pre></div>
+
+<p>In this scenario, <code>Option#grep</code> can sometimes make the code more concise</p>
+
+<div class="highlight highlight-source-ruby"><pre>opt.grep(<span class="pl-c1">1</span>...<span class="pl-c1">10</span>) {|<span class="pl-smi">v</span>| v <span class="pl-k">+</span> <span class="pl-c1">1</span>}</pre></div>
+
+<p><code>Option#grep</code> supports lambdas as well</p>
+
+<div class="highlight highlight-source-ruby"><pre>is_positive <span class="pl-k">=</span> lambda {|<span class="pl-smi">x</span>| x <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>}
+
+opt.grep(is_positive) {|<span class="pl-smi">v</span>| <span class="pl-c1">Math</span>.log(v)}
+<span class="pl-c"># is equivalent to</span>
+opt.filter(<span class="pl-k">&amp;</span>is_positive).map {|<span class="pl-smi">v</span>| <span class="pl-c1">Math</span>.log(v)}</pre></div>
+
+<h2>
+<a id="haskell-datamaybe-cheat-sheet" class="anchor" href="#haskell-datamaybe-cheat-sheet" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Haskell Data.Maybe cheat sheet</h2>
+
+<p>Some (None?) might enjoy a comparison with Haskell's <a href="https://hackage.haskell.org/package/base/docs/Data-Maybe.html">Maybe</a>. Here is how the Data.Maybe API translate to Yopt.</p>
+
+<div class="highlight highlight-source-ruby"><pre>maybe default f opt     <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.map(<span class="pl-k">&amp;</span>f).get_or_else(default)
+isJust opt              <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-k">not</span> opt.empty?
+isNothing opt           <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.empty?
+fromJust opt            <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.get
+fromMaybe default opt   <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.get_or_else default
+listToMaybe list        <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-c1">Option</span>.ary_to_type list
+maybeToList opt         <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.to_a
+catMaybes listOfOptions <span class="pl-k">-</span><span class="pl-k">&gt;</span> listOfOptions.flatten
+mapMaybe f list         <span class="pl-k">-</span><span class="pl-k">&gt;</span> list.flat_map <span class="pl-k">&amp;</span>f</pre></div>
+
+<h2>
+<a id="development" class="anchor" href="#development" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Development</h2>
+
+<p>After checking out the repo, run <code>bin/setup</code> to install dependencies. Then, run <code>rake test</code> to run the tests. You can also run <code>bin/console</code> for an interactive prompt that will allow you to experiment.</p>
+
+<p>To install this gem onto your local machine, run <code>bundle exec rake install</code>. To release a new version, update the version number in <code>version.rb</code>, and then run <code>bundle exec rake release</code>, which will create a git tag for the version, push git commits and tags, and push the <code>.gem</code> file to <a href="https://rubygems.org">rubygems.org</a>.</p>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>Bug reports and pull requests are welcome on GitHub at <a href="https://github.com/lbarasti/yopt">https://github.com/lbarasti/yopt</a>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the <a href="http://contributor-covenant.org">Contributor Covenant</a> code of conduct.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>The gem is available as open source under the terms of the <a href="http://opensource.org/licenses/MIT">MIT License</a>.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/lbarasti/yopt">Yopt</a> is maintained by <a href="https://github.com/lbarasti">lbarasti</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
