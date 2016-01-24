@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Scala-inspired Options for the idiomatic Rubyist.}
   spec.description   = %q{This gem makes it possible to adopt Options in Ruby. It's meant to make conditional flow in our software clearer and more linear.}
-  spec.homepage      = "https://github.com/lbarasti/yopt"
+  spec.homepage      = "http://lbarasti.github.io/yopt"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
