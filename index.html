@@ -74,7 +74,7 @@ none.get_or_else <span class="pl-c1">0</span> <span class="pl-c"># returns 0</sp
 none.select {|<span class="pl-smi">value</span>| value <span class="pl-k">&lt;</span> <span class="pl-c1">0</span>} <span class="pl-c"># returns None</span>
 some.select {|<span class="pl-smi">value</span>| value <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>} <span class="pl-c"># returns Some(42)</span></pre></div>
 
-<p>We can easily turn any object into an Option by means of <code>Option.call</code> - aliased to <code>Option.[]</code> for convenience.
+<p>We can easily turn any object into an Option by means of <code>Option.call</code> - aliased to <code>Option[]</code> for convenience.
 For instance, this is useful when dealing with functions that might return <code>nil</code> to express the absence of a result.</p>
 
 <div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Yopt</span>::<span class="pl-c1">Option</span>[<span class="pl-c1">nil</span>] <span class="pl-c"># returns None</span>
@@ -149,13 +149,13 @@ maybe_sqrt.(<span class="pl-c1">1</span>).flat_map {|<span class="pl-smi">v</spa
 
 <p><code>Option#zip</code> returns <code>None</code> if any of the arguments is <code>None</code> or if the caller is <code>None</code></p>
 
-<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span>.zip <span class="pl-c1">Option</span>.[<span class="pl-c1">42</span>] <span class="pl-c"># None</span>
-<span class="pl-c1">Option</span>.[<span class="pl-c1">42</span>].zip <span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span> <span class="pl-c"># None</span>
-<span class="pl-c1">Option</span>.[<span class="pl-c1">42</span>].zip <span class="pl-c1">Option</span>.[<span class="pl-c1">0</span>], <span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span>, <span class="pl-c1">Option</span>.[<span class="pl-k">-</span><span class="pl-c1">1</span>] <span class="pl-c"># None</span></pre></div>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span>.zip <span class="pl-c1">Option</span>[<span class="pl-c1">42</span>] <span class="pl-c"># None</span>
+<span class="pl-c1">Option</span>[<span class="pl-c1">42</span>].zip <span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span> <span class="pl-c"># None</span>
+<span class="pl-c1">Option</span>[<span class="pl-c1">42</span>].zip <span class="pl-c1">Option</span>[<span class="pl-c1">0</span>], <span class="pl-c1">Yopt</span>::<span class="pl-c1">None</span>, <span class="pl-c1">Option</span>[<span class="pl-k">-</span><span class="pl-c1">1</span>] <span class="pl-c"># None</span></pre></div>
 
 <p>When both the caller and all the arguments are defined then <code>zip</code> collects all the values in an Array wrapped in a <code>Yopt::Some</code></p>
 
-<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Option</span>.[<span class="pl-c1">42</span>].zip <span class="pl-c1">Option</span>.[<span class="pl-c1">0</span>], <span class="pl-c1">Option</span>.[<span class="pl-s"><span class="pl-pds">"</span>str<span class="pl-pds">"</span></span>] <span class="pl-c"># Some([42, 0, "str"])</span></pre></div>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Option</span>[<span class="pl-c1">42</span>].zip <span class="pl-c1">Option</span>[<span class="pl-c1">0</span>], <span class="pl-c1">Option</span>[<span class="pl-s"><span class="pl-pds">"</span>str<span class="pl-pds">"</span></span>] <span class="pl-c"># Some([42, 0, "str"])</span></pre></div>
 
 <h3>
 <a id="grep" class="anchor" href="#grep" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>#grep</h3>
