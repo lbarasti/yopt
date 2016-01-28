@@ -60,7 +60,7 @@ none.select {|value| value < 0} # returns None
 some.select {|value| value > 0} # returns Some(42)
 ```
 
-We can easily turn any object into an Option by means of `Option.call` - aliased to `Option.[]` for convenience.
+We can easily turn any object into an Option by means of `Option.call` - aliased to `Option[]` for convenience.
 For instance, this is useful when dealing with functions that might return `nil` to express the absence of a result.
 
 ```ruby
@@ -137,15 +137,15 @@ email_opt.zip(captcha_opt).each{|(email,_)| send_pass_recovery(email)}
 
 `Option#zip` returns `None` if any of the arguments is `None` or if the caller is `None`
 ```ruby
-Yopt::None.zip Option.[42] # None
-Option.[42].zip Yopt::None # None
-Option.[42].zip Option.[0], Yopt::None, Option.[-1] # None
+Yopt::None.zip Option[42] # None
+Option[42].zip Yopt::None # None
+Option[42].zip Option[0], Yopt::None, Option[-1] # None
 ```
 
 When both the caller and all the arguments are defined then `zip` collects all the values in an Array wrapped in a `Yopt::Some`
 
 ```ruby
-Option.[42].zip Option.[0], Option.["str"] # Some([42, 0, "str"])
+Option[42].zip Option[0], Option["str"] # Some([42, 0, "str"])
 ```
 
 
