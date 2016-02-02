@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Yopt::VERSION
   spec.authors       = ["lorenzo.barasti"]
 
-  spec.summary       = %q{Scala-inspired Options for the idiomatic Rubyist.}
-  spec.description   = %q{This gem makes it possible to adopt Options in Ruby. It's meant to make conditional flow in our software clearer and more linear.}
+  spec.summary       = %q{Scala-inspired Options for the idiomatic Rubyist}
+  spec.description   = %q{The Option type models the possible absence of a value. It lets us deal with the uncertainty related to such a value being there without having to resort to errors or conditional blocks.}
   spec.homepage      = "http://lbarasti.github.io/yopt"
   spec.license       = "MIT"
 
@@ -18,7 +18,9 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.required_ruby_version = '>= 2.0'
+
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "minitest"
+  spec.add_development_dependency "minitest", "~> 5.8.0"
 end
