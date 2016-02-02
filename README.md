@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/lbarasti/yopt.svg?branch=master)](https://travis-ci.org/lbarasti/yopt)
+
 # Yopt
 
 A [Scala](http://www.scala-lang.org/api/current/index.html#scala.Option) inspired gem that introduces `Option`s to Ruby while aiming for an idiomatic API.
