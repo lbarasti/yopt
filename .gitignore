@@ -8,5 +8,5 @@
 /spec/reports/
 /tmp/
 /vendor
-/yopt-0.1.0.gem
+/yopt-*.*.*.gem
 /_site/
