@@ -183,7 +183,8 @@ describe 'Some' do
     @some.or_else(None).must_equal @some
   end
   it 'should return itself on `#get_or_else`' do
-    @some.get_or_else(0).must_equal @some.get
+    (@some.get_or_else {raise}).must_equal @some.get
+    proc {@some.get_or_else}.must_raise ArgumentError
   end
   it 'should not be empty' do
     @some.empty?.must_equal false
@@ -223,7 +224,8 @@ describe 'None' do
     None.or_else(Some.new(4)).get.must_equal 4
   end
   it 'should return `other` on `#get_or_else`' do
-    None.get_or_else(42).must_equal 42
+    None.get_or_else {'lazily evaluated'}.must_equal "lazily evaluated"
+    proc {None.get_or_else(42)}.must_raise ArgumentError
   end
   it 'should be empty' do
     None.empty?.must_equal true

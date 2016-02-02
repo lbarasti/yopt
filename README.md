@@ -48,8 +48,16 @@ none.each {|value| puts value} # does not print anything
 We can safely retrieve the optional value by passing a default value to `Option#get_or_else`
 
 ```ruby
-some.get_or_else 0 # returns 42
-none.get_or_else 0 # returns 0
+some.get_or_else {0} # returns 42
+none.get_or_else {0} # returns 0
+```
+
+Notice how we are passing a block rather than an argument. This makes the evaluation of the default value lazy. In other words the block will only be evaluated if the caller in None.
+
+This gives us the possibility to react in a special way to a None value without breaking the API fluency, e.g.
+
+```ruby
+opt.each {|v| do_something_with(v)}.get_or_else {log_failure}
 ```
 
 We can also filter the optional value depending on how it evaluates against a block via `Option#select`
@@ -87,7 +95,7 @@ returns `c` if `opt` is `None`, and `f.(c, opt)` otherwise.
 
 This is a shortcut to
 ```
-opt.map{|v| f.(c,v)}.get_or_else(c)`
+opt.map{|v| f.(c,v)}.get_or_else {c}`
 ```
 
 
@@ -177,11 +185,11 @@ opt.filter(&is_positive).map {|v| Math.log(v)}
 
 Some (None?) might enjoy a comparison with Haskell's [Maybe](https://hackage.haskell.org/package/base/docs/Data-Maybe.html). Here is how the Data.Maybe API translate to Yopt.
 ```ruby
-maybe default f opt     -> opt.map(&f).get_or_else(default)
+maybe default f opt     -> opt.map(&f).get_or_else {default}
 isJust opt              -> not opt.empty?
 isNothing opt           -> opt.empty?
 fromJust opt            -> opt.get
-fromMaybe default opt   -> opt.get_or_else default
+fromMaybe default opt   -> opt.get_or_else {default}
 listToMaybe list        -> Option.ary_to_type list
 maybeToList opt         -> opt.to_a
 catMaybes listOfOptions -> listOfOptions.flatten

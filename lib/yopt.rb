@@ -47,11 +47,13 @@ module Yopt
       raise Option.invalid_argument('an Option', other) unless other.is_a? Option
       if empty? then other else self end
     end
-    def get_or_else default
-      if empty? then default else self.get end
+    def get_or_else
+      raise ArgumentError, 'missing block' unless block_given?
+      return self.get unless empty?
+      yield
     end
     def or_nil
-      get_or_else nil
+      get_or_else {nil}
     end
     def inspect() to_s end
     private
