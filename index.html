@@ -65,8 +65,14 @@ none.each {|<span class="pl-smi">value</span>| puts value} <span class="pl-c"># 
 
 <p>We can safely retrieve the optional value by passing a default value to <code>Option#get_or_else</code></p>
 
-<div class="highlight highlight-source-ruby"><pre>some.get_or_else <span class="pl-c1">0</span> <span class="pl-c"># returns 42</span>
-none.get_or_else <span class="pl-c1">0</span> <span class="pl-c"># returns 0</span></pre></div>
+<div class="highlight highlight-source-ruby"><pre>some.get_or_else {<span class="pl-c1">0</span>} <span class="pl-c"># returns 42</span>
+none.get_or_else {<span class="pl-c1">0</span>} <span class="pl-c"># returns 0</span></pre></div>
+
+<p>Notice how we are passing a block rather than an argument. This makes the evaluation of the default value lazy. In other words the block will only be evaluated if the caller in None.</p>
+
+<p>This gives us the possibility to react in a special way to a None value without breaking the API fluency, e.g.</p>
+
+<div class="highlight highlight-source-ruby"><pre>opt.each {|<span class="pl-smi">v</span>| do_something_with(v)}.get_or_else {log_failure}</pre></div>
 
 <p>We can also filter the optional value depending on how it evaluates against a block via <code>Option#select</code></p>
 
@@ -104,7 +110,7 @@ For instance, this is useful when dealing with functions that might return <code
 
 <p>This is a shortcut to</p>
 
-<pre><code>opt.map{|v| f.(c,v)}.get_or_else(c)`
+<pre><code>opt.map{|v| f.(c,v)}.get_or_else {c}`
 </code></pre>
 
 <h3>
@@ -181,11 +187,11 @@ opt.filter(<span class="pl-k">&amp;</span>is_positive).map {|<span class="pl-smi
 
 <p>Some (None?) might enjoy a comparison with Haskell's <a href="https://hackage.haskell.org/package/base/docs/Data-Maybe.html">Maybe</a>. Here is how the Data.Maybe API translate to Yopt.</p>
 
-<div class="highlight highlight-source-ruby"><pre>maybe default f opt     <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.map(<span class="pl-k">&amp;</span>f).get_or_else(default)
+<div class="highlight highlight-source-ruby"><pre>maybe default f opt     <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.map(<span class="pl-k">&amp;</span>f).get_or_else {default}
 isJust opt              <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-k">not</span> opt.empty?
 isNothing opt           <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.empty?
 fromJust opt            <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.get
-fromMaybe default opt   <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.get_or_else default
+fromMaybe default opt   <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.get_or_else {default}
 listToMaybe list        <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-c1">Option</span>.ary_to_type list
 maybeToList opt         <span class="pl-k">-</span><span class="pl-k">&gt;</span> opt.to_a
 catMaybes listOfOptions <span class="pl-k">-</span><span class="pl-k">&gt;</span> listOfOptions.flatten
