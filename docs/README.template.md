@@ -163,7 +163,7 @@ Option[42].zip Option[0], Option["str"] # Some([42, 0, "str"])
 We often find ourselves filtering data before applying a transformation...
 
 ```ruby
-opt.filter {|v| (1...10).include? v}.map {|v| v + 1}
+opt.select {|v| (1...10).include? v}.map {|v| v + 1}
 ```
 
 In this scenario, `Option#grep` can sometimes make the code more concise
@@ -179,7 +179,7 @@ is_positive = lambda {|x| x > 0}
 
 opt.grep(is_positive) {|v| Math.log(v)}
 # is equivalent to
-opt.filter(&is_positive).map {|v| Math.log(v)}
+opt.select(&is_positive).map {|v| Math.log(v)}
 ```
 
 
