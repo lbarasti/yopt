@@ -168,7 +168,7 @@ maybe_sqrt.(<span class="pl-c1">1</span>).flat_map {|<span class="pl-smi">v</spa
 
 <p>We often find ourselves filtering data before applying a transformation...</p>
 
-<div class="highlight highlight-source-ruby"><pre>opt.filter {|<span class="pl-smi">v</span>| (<span class="pl-c1">1</span>...<span class="pl-c1">10</span>).include? v}.map {|<span class="pl-smi">v</span>| v <span class="pl-k">+</span> <span class="pl-c1">1</span>}</pre></div>
+<div class="highlight highlight-source-ruby"><pre>opt.select {|<span class="pl-smi">v</span>| (<span class="pl-c1">1</span>...<span class="pl-c1">10</span>).include? v}.map {|<span class="pl-smi">v</span>| v <span class="pl-k">+</span> <span class="pl-c1">1</span>}</pre></div>
 
 <p>In this scenario, <code>Option#grep</code> can sometimes make the code more concise</p>
 
@@ -180,7 +180,7 @@ maybe_sqrt.(<span class="pl-c1">1</span>).flat_map {|<span class="pl-smi">v</spa
 
 opt.grep(is_positive) {|<span class="pl-smi">v</span>| <span class="pl-c1">Math</span>.log(v)}
 <span class="pl-c"># is equivalent to</span>
-opt.filter(<span class="pl-k">&amp;</span>is_positive).map {|<span class="pl-smi">v</span>| <span class="pl-c1">Math</span>.log(v)}</pre></div>
+opt.select(<span class="pl-k">&amp;</span>is_positive).map {|<span class="pl-smi">v</span>| <span class="pl-c1">Math</span>.log(v)}</pre></div>
 
 <h2>
 <a id="haskell-datamaybe-cheat-sheet" class="anchor" href="#haskell-datamaybe-cheat-sheet" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Haskell Data.Maybe cheat sheet</h2>
