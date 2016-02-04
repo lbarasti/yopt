@@ -43,9 +43,10 @@ module Yopt
     def ^ lambda
       self | Yopt.lift(&lambda)
     end
-    def or_else other
-      raise Option.invalid_argument('an Option', other) unless other.is_a? Option
-      if empty? then other else self end
+    def or_else
+      return self unless empty?
+      other = yield
+      other.is_a?(Option) ? other : raise(Option.invalid_argument('an Option', other))
     end
     def get_or_else
       raise ArgumentError, 'missing block' unless block_given?

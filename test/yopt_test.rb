@@ -65,9 +65,11 @@ describe 'Option' do
     a = (0..4).map {|i| if i.odd? then Some.new(i) else None end}
     a.flat_map{|opt| opt.map(&:pred)}.must_equal [0, 2]
   end
-  it 'should raise an error when a non-`Option` argument is passed to `#or_else`' do
-    proc {Some.new(1).or_else(5)}.must_raise TypeError
-    proc {None.or_else([])}.must_raise TypeError
+  it 'should raise an error on `#or_else` when the caller is `empty` and the given block returns a non-`Option` value' do
+    proc {None.or_else {"not-an-option"}}.must_raise TypeError
+  end
+  it 'should lazily evaluate the block passed to `#or_else`' do
+    Some.new(1).or_else {fail}.must_equal Option[1]
   end
   it 'is not affected by changes to the array representation' do
     s1 = Some.new([1,2,3])
@@ -179,8 +181,8 @@ describe 'Some' do
     @some.or_nil.must_equal @some.get
   end
   it 'should return itself on `#or_else`' do
-    @some.or_else(Some.new(4)).must_equal @some
-    @some.or_else(None).must_equal @some
+    @some.or_else {Some.new(4)}.must_equal @some
+    @some.or_else {None}.must_equal @some
   end
   it 'should return itself on `#get_or_else`' do
     (@some.get_or_else {raise}).must_equal @some.get
@@ -221,7 +223,7 @@ describe 'None' do
     None.or_nil.must_equal nil
   end
   it 'should return `other` on `#or_else`' do
-    None.or_else(Some.new(4)).get.must_equal 4
+    None.or_else {Some.new(4)}.get.must_equal 4
   end
   it 'should return `other` on `#get_or_else`' do
     None.get_or_else {'lazily evaluated'}.must_equal "lazily evaluated"
