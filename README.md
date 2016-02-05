@@ -159,6 +159,19 @@ Option[42].zip Option[0], Option["str"] # Some([42, 0, "str"])
 ```
 
 
+### #or_else
+When writing an application whose functionality depends on the availability of some services/information, it's a good idea to prepare for the scenario where such services/information are not available. 
+
+`#or_else` lets us define a chain of block calls that will stop as soon as one of them returns a non-empty option.
+```ruby
+info = get_opt.(cache, email).or_else {db.get[email]}.or_else {api.get[email]}
+case info
+when Yopt::Some then info.each(&process)
+else log_failure.("could not retrieve info fot #{email}")
+end
+```
+
+
 ### #grep
 We often find ourselves filtering data before applying a transformation...
 

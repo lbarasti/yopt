@@ -159,6 +159,15 @@ Option[42].zip Option[0], Option["str"] # Some([42, 0, "str"])
 ```
 
 
+### #or_else
+When writing an application whose functionality depends on the availability of some services/information, it's a good idea to prepare for the scenario where such services/information are not available. 
+
+`#or_else` lets us define a chain of block calls that will stop as soon as one of them returns a non-empty option.
+```ruby
+<<<<<docs/usage_or_else.rb
+```
+
+
 ### #grep
 We often find ourselves filtering data before applying a transformation...
 

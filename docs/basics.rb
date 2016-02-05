@@ -1,8 +1,5 @@
 require_relative '../test/test_helper' # IGNORE
 # IGNORE
-require 'test/unit' # IGNORE
-include Test::Unit::Assertions # IGNORE
-# IGNORE
 class Cache < Hash
   def maybe_get key
     Yopt::Option[self[key]]
@@ -22,7 +19,7 @@ end
 def get_info cache, key
   cache.maybe_get(key)
     .map {|value| "found value %.2f for key %s" % [value, key]}
-    .get_or_else "value not found for key #{key}"
+    .get_or_else {"value not found for key #{key}"}
 end
 
 cache = Cache.new
