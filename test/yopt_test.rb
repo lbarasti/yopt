@@ -71,6 +71,16 @@ describe 'Option' do
   it 'should lazily evaluate the block passed to `#or_else`' do
     Some.new(1).or_else {fail}.must_equal Option[1]
   end
+  it 'supports lazy disjunction of Options with `#or_else`' do
+    f = Yopt.lift {|x| x if x < 0}
+    g = Yopt.lift {|x| x if x > 0}
+    c = -> {Option[42]} # a lambda returning a constant
+
+    f.(1).or_else{ g.(1) }.must_equal g.(1)
+    f.(-1).or_else{ g.(-1) }.must_equal f.(-1)
+    f.(1).or_else(&c).or_else{ Option[0] }.get.must_equal 42
+    f.(0).or_else{ g.(0) }.or_else{ Option[0] }.get.must_equal 0
+  end
   it 'is not affected by changes to the array representation' do
     s1 = Some.new([1,2,3])
     s1.to_ary << 4

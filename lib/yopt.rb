@@ -8,7 +8,7 @@ module Yopt
   module Option
     include Enumerable
     def self.ary_to_type value
-      raise Option.invalid_argument('an array-like object', value) unless value.respond_to? :to_ary
+      raise Option.invalid_argument('Argument must be an array-like object', value) unless value.respond_to? :to_ary
       return value if value.is_a? Option
       if value.to_ary.empty? then None else Some.new(value.to_ary.first) end
     end
@@ -46,7 +46,7 @@ module Yopt
     def or_else
       return self unless empty?
       other = yield
-      other.is_a?(Option) ? other : raise(Option.invalid_argument('an Option', other))
+      other.is_a?(Option) ? other : raise(Option.invalid_argument('Block should evaluate to an Option', other))
     end
     def get_or_else
       raise ArgumentError, 'missing block' unless block_given?
@@ -59,7 +59,7 @@ module Yopt
     def inspect() to_s end
     private
     def self.invalid_argument type_str, arg
-      TypeError.new "Argument must be #{type_str}. Found #{arg.class}"
+      TypeError.new "#{type_str}. Found #{arg.class}"
     end
   end
   class Some
