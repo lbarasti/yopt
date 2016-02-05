@@ -1,16 +1,18 @@
 require_relative '../test/test_helper' # IGNORE
 # IGNORE
-# IGNORE
-get_opt = Yopt.lift {|cache, key| cache[key]} # IGNORE
-process = -> info {p info} # IGNORE
-log_failure = -> msg {p "WARN -- #{msg}"} # IGNORE
-cache = {} # IGNORE
-db = Struct.new(:get).new(-> email {Yopt::None}) # IGNORE
-api = Struct.new(:get).new(Yopt.lift {|email| {name: 'user', address: '...'} if email == 'username@mail.com'}) # IGNORE
-email = ['username@mail.com', 'invalid@mail.com'].sample # IGNORE
-# IGNORE
-info = get_opt.(cache, email).or_else {db.get[email]}.or_else {api.get[email]}
-case info
-when Yopt::Some then info.each(&process)
-else log_failure.("could not retrieve info fot #{email}")
+# stub functions # IGNORE
+get_from_cache  = Yopt.lift {|email| 'E1W 01' if email == 'alice@mail.com'} # IGNORE
+get_from_db     = Yopt.lift {|email| 'EC1 W1' if email == 'bob@mail.com'} # IGNORE
+get_from_remote = Yopt.lift {|email| 'N16 4AP' if email == 'eve@mail.com'} # IGNORE
+process = -> info {"found #{info}"} # IGNORE
+log_failure = -> msg {"WARN -- #{msg}"} # IGNORE
+# example # IGNORE
+get_postcode = -> email do
+  get_from_cache[email]
+    .or_else { get_from_db[email] }
+    .or_else { get_from_remote[email] }
 end
+same_string(get_postcode['alice@mail.com']).("Some(E1W 01)") # IGNORE
+same_string(get_postcode['bob@mail.com']).("Some(EC1 W1)") # IGNORE
+same_string(get_postcode['eve@mail.com']).("Some(N16 4AP)") # IGNORE
+same_string(get_postcode['zed@mail.com']).("None") # IGNORE
