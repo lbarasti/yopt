@@ -12,7 +12,7 @@ get_postcode = -> email do
     .or_else { get_from_db[email] }
     .or_else { get_from_remote[email] }
 end
-same_string(get_postcode['alice@mail.com']).("Some(E1W 01)") # IGNORE
-same_string(get_postcode['bob@mail.com']).("Some(EC1 W1)") # IGNORE
-same_string(get_postcode['eve@mail.com']).("Some(N16 4AP)") # IGNORE
-same_string(get_postcode['zed@mail.com']).("None") # IGNORE
+assert_equal get_postcode['alice@mail.com'], Yopt::Some.new("E1W 01") # IGNORE
+assert_equal get_postcode['bob@mail.com'],   Yopt::Some.new("EC1 W1") # IGNORE
+assert_equal get_postcode['eve@mail.com'],   Yopt::Some.new("N16 4AP") # IGNORE
+assert_equal get_postcode['zed@mail.com'],   Yopt::None # IGNORE
