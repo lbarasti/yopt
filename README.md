@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/yopt.svg)](https://badge.fury.io/rb/yopt)
 [![Build Status](https://travis-ci.org/lbarasti/yopt.svg?branch=master)](https://travis-ci.org/lbarasti/yopt) [![Coverage Status](https://coveralls.io/repos/github/lbarasti/yopt/badge.svg?branch=master)](https://coveralls.io/github/lbarasti/yopt?branch=master)
 
 # Yopt
