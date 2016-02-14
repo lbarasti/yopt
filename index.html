@@ -164,6 +164,19 @@ maybe_sqrt.(<span class="pl-c1">1</span>).flat_map {|<span class="pl-smi">v</spa
 <div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Option</span>[<span class="pl-c1">42</span>].zip <span class="pl-c1">Option</span>[<span class="pl-c1">0</span>], <span class="pl-c1">Option</span>[<span class="pl-s"><span class="pl-pds">"</span>str<span class="pl-pds">"</span></span>] <span class="pl-c"># Some([42, 0, "str"])</span></pre></div>
 
 <h3>
+<a id="or_else" class="anchor" href="#or_else" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>#or_else</h3>
+
+<p>When writing an application whose functionality depends on the availability of other services/information, it's a good idea to prepare for the scenario where such services/information are not available. </p>
+
+<p><code>#or_else</code> lets us define a chain of block calls that will stop as soon as one of them returns a non-empty option.</p>
+
+<div class="highlight highlight-source-ruby"><pre>get_postcode <span class="pl-k">=</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> email <span class="pl-k">do</span>
+  get_from_cache[email]
+    .or_else { get_from_db[email] }
+    .or_else { get_from_remote[email] }
+<span class="pl-k">end</span></pre></div>
+
+<h3>
 <a id="grep" class="anchor" href="#grep" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>#grep</h3>
 
 <p>We often find ourselves filtering data before applying a transformation...</p>
