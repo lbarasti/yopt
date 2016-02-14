@@ -7,13 +7,14 @@ Gem::Specification.new do |spec|
   spec.name          = "yopt"
   spec.version       = Yopt::VERSION
   spec.authors       = ["lorenzo.barasti"]
+  spec.email         = "yopt-user-group@googlegroups.com"
 
   spec.summary       = %q{Scala-inspired Options for the idiomatic Rubyist}
   spec.description   = %q{The Option type models the possible absence of a value. It lets us deal with the uncertainty related to such a value being there without having to resort to errors or conditional blocks.}
   spec.homepage      = "http://lbarasti.github.io/yopt"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(lib/|LICENSE|README)}) }
+  spec.files         = `git ls-files -z`.split("\x0").select { |f| f.match(%r{^(lib/|LICENSE|README)}) }
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
@@ -23,5 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "minitest", "~> 5.8"
-  spec.add_development_dependency "coveralls"
+  spec.add_development_dependency 'coveralls', '~> 0'
 end
