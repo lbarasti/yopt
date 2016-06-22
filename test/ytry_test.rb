@@ -37,9 +37,17 @@ describe 'Failure' do
     else fail
     end
   end
-  it 'should support `#map`/`#collect`/`#flatten`' do
+  it 'should support `#map`/`#collect`/`#flatten`/`#select`' do
     @failure.map{|v| v + 1}.must_equal @failure
     @failure.collect(&:succ).must_equal @failure
     @failure.flatten.must_equal @failure
+    @failure.select{|x| x < 0}.must_equal @failure
+  end
+  it 'should be enumerable' do
+    @failure.each{|x| raise RuntimeError}.must_equal []
+    @failure.any?{|x| x > 0}.must_equal false
+    @failure.all?{|x| x > 0}.must_equal true
+    @failure.reduce(42){raise RuntimeError}.must_equal 42
+    @failure.include?(42).must_equal false
   end
 end
