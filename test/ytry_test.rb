@@ -20,6 +20,8 @@ end
 describe 'Failure' do
   before do
     @failure = Try{ 1 / 0 }
+    @failure_type = @failure.error.class
+    @failure_message = @failure.error.message
   end
   it 'should raise an exception on #get' do
     -> { @failure.get }.must_raise ZeroDivisionError
@@ -28,13 +30,13 @@ describe 'Failure' do
     Try{raise TypeError}.error.must_be_kind_of TypeError
   end
   it 'should support case statements' do
-    case Try{raise TypeError.new("Wrong Type")}
-    when Failure then :ok
-    else fail
+    case @failure
+      when Failure then :ok
+      else fail
     end
-    case Try{raise TypeError.new("Wrong Type")}
-    when Failure.new(TypeError) then :ok
-    else fail
+    case @failure
+      when Failure.new(@failure_type) then :ok
+      else fail
     end
   end
   it 'should support `#map`/`#collect`/`#flatten`/`#select`' do
@@ -49,5 +51,20 @@ describe 'Failure' do
     @failure.all?{|x| x > 0}.must_equal true
     @failure.reduce(42){raise RuntimeError}.must_equal 42
     @failure.include?(42).must_equal false
+  end
+  it 'should return `other` on `#or_else`' do
+    @failure.or_else {Try {1}}.get.must_equal 1
+  end
+  it 'should return `other` on `#get_or_else`' do
+    @failure.get_or_else {'lazily evaluated'}.must_equal "lazily evaluated"
+  end
+  it 'does not support passing an argument to #get_or_else' do
+    -> {@failure.get_or_else(42)}.must_raise ArgumentError
+  end
+  it 'should be empty' do
+    @failure.empty?.must_equal true
+  end
+  it 'should have a nice string representation' do
+    @failure.to_s.must_equal "Failure(#{@failure_message})"
   end
 end
