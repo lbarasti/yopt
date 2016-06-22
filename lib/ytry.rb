@@ -57,6 +57,7 @@ module Ytry
       return self.get unless empty?
       yield
     end
+    def inspect() to_s end
     private
     def self.invalid_argument type_str, arg
       TypeError.new "#{type_str}. Found #{arg.class}"
