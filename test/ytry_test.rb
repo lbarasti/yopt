@@ -17,6 +17,21 @@ describe 'Try' do
   end
 end
 
+describe 'Success' do
+  before do
+    @success = Try{ 41 + 1 }
+  end
+  it 'should not support flattening a scalar value' do
+    -> {@success.flatten}.must_raise TypeError
+  end
+  it 'should support `#flatten`/`#flat_map`' do
+    Try{@success}.flatten.must_equal @success
+    @success.map{|v| Try{v}}.flatten.must_equal @success
+    @success.flat_map{|c| Try{c - 42}}.must_equal Try{0}
+    @success.flat_map{|c| Try{raise TypeError}}.must_be_kind_of Failure
+  end
+end
+
 describe 'Failure' do
   before do
     @failure = Try{ 1 / 0 }

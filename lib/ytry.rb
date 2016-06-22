@@ -19,11 +19,15 @@ module Ytry
     def each &block
       to_ary.each &block
     end
-    %i(map flat_map select reject collect collect_concat).each do |method|
+    %i(map select reject collect collect_concat).each do |method|
       define_method method, ->(&block) {
         block or return enum_for(method)
-        self.empty? ? self : Try.ary_to_type(block.call(self.get))
+        self.empty? ? self : Try.ary_to_type(super(&block))
       }
+    end
+    def flat_map &block
+      block or return enum_for(method)
+      self.empty? ? self : Try.ary_to_type(block.call(self.get))
     end
     def grep(pattern, &block)
       Try.ary_to_type super
