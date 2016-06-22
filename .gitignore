@@ -10,3 +10,4 @@
 /vendor
 /yopt-*.*.*.gem
 /_site/
+/test/coverage/
