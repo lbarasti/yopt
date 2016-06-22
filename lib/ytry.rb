@@ -22,7 +22,7 @@ module Ytry
     %i(map flat_map select reject collect collect_concat).each do |method|
       define_method method, ->(&block) {
         block or return enum_for(method)
-        Try.ary_to_type super(&block)
+        self.empty? ? self : Try.ary_to_type(super(&block))
       }
     end
     def grep(pattern, &block)
