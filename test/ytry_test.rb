@@ -12,7 +12,7 @@ describe 'Try' do
   it 'something' do
     Try{'hello'}.must_equal Success.new('hello')
     Try{1/0}.error.must_be_kind_of ZeroDivisionError
-    lambda{Try{1/0}.get}.must_raise RuntimeError
+    lambda{Try{1/0}.get}.must_raise ZeroDivisionError
     Try{raise TypeError}.must_be_kind_of Failure
     Try{raise TypeError}.error.must_be_kind_of TypeError
     case Try{raise TypeError.new("Wrong Type")}

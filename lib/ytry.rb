@@ -78,7 +78,7 @@ module Ytry
     def initialize value
       @error = value.freeze
     end
-    def get() raise "Cannot call ##{__method__} on #{self}" end
+    def get() raise @error end
     def empty?() true end
     def to_s() "Failure(#{@error})" end
     def to_ary() [] end
