@@ -14,7 +14,9 @@ module Ytry
     def self.ary_to_type value
       raise Try.invalid_argument('Argument must be an array-like object', value) unless value.respond_to? :to_ary
       return value if value.is_a? Try
-      if value.to_ary.empty? then Failure.new(Exception.new) else Success.new(value.to_ary.first) end
+      value.to_ary.empty? ?
+        Failure.new(RuntimeError.new("Could not convert empty array-like object to Success")) :
+        Success.new(value.to_ary.first)
     end
     def each &block
       to_ary.each &block
