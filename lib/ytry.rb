@@ -24,12 +24,15 @@ module Ytry
     %i(map select reject collect collect_concat).each do |method|
       define_method method, ->(&block) {
         block or return enum_for(method)
-        self.empty? ? self : Try.ary_to_type(super(&block))
+        self.empty? ? self : Try.ary_to_type(Try{super(&block)}.flatten)
       }
     end
     def flat_map &block
       block or return enum_for(method)
-      self.empty? ? self : Try.ary_to_type(block.call(self.get))
+      return self if self.empty?
+      wrapped_result = Try{block.call(self.get)}
+      return wrapped_result if (!wrapped_result.empty? && !wrapped_result.get.respond_to?(:to_ary))
+      Try.ary_to_type(wrapped_result.flatten)
     end
     def grep(pattern, &block)
       Try.ary_to_type super
@@ -78,6 +81,10 @@ module Ytry
     def === other
       other.is_a?(Success) && self.get === other.get
     end
+    def recover &block
+      raise ArgumentError, 'missing block' unless block_given?
+      self
+    end
   end
   class Failure
     include Try
@@ -94,6 +101,11 @@ module Ytry
     end
     def === other
       other.is_a?(Failure) && self.error === other.error
+    end
+    def recover &block
+      raise ArgumentError, 'missing block' unless block_given?
+      candidate = Success.new(@error).map &block
+      (!candidate.empty? && candidate.get.nil?) ? self : candidate
     end
   end
 end

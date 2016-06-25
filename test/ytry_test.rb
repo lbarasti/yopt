@@ -20,6 +20,7 @@ end
 describe 'Success' do
   before do
     @success = Try{ 41 + 1 }
+    @success_value = @success.get
   end
   it 'should not support flattening a scalar value' do
     -> {@success.flatten}.must_raise TypeError
@@ -29,6 +30,17 @@ describe 'Success' do
     @success.map{|v| Try{v}}.flatten.must_equal @success
     @success.flat_map{|c| Try{c - 42}}.must_equal Try{0}
     @success.flat_map{|c| Try{raise TypeError}}.must_be_kind_of Failure
+  end
+  it 'should be forgiving when calling `#flat_map` on a Success wrapping a scalar value' do
+    Try{1} | -> x {x/0}
+    Try{1} | -> x {x}
+  end
+  it 'should return itself on `#recover`/`#or_else`' do
+    @success.recover{fail}.must_equal @success
+    @success.or_else{fail}.must_equal @success
+  end
+  it 'should return the wrapped value on `#get_or_else`' do
+    @success.get_or_else{fail}.must_equal @success_value
   end
 end
 
@@ -85,5 +97,30 @@ describe 'Failure' do
   end
   it 'should have a nice string representation' do
     @failure.to_s.must_equal "Failure(#{@failure_message})"
+  end
+  it 'should be recoverable' do
+    @failure.recover{|e| e}.get.must_be_kind_of @failure_type
+    @failure.recover{|e| 1}.must_equal Success.new(1)
+  end
+  it 'should preserve the current error if the recover block returns nil' do
+    @failure.recover{|e| case e; when RuntimeError then 1; end}.must_equal @failure
+  end
+  it 'should update the failure type when the recover block raises an error' do
+    case @failure.recover{|e| raise RuntimeError}
+      when Failure.new(@failure_type) then fail
+      when Failure.new(RuntimeError) then :ok
+      else fail
+    end
+  end
+  it 'should behave predictably when combining #recover and #flatten' do
+    nested_try = @failure.recover{|e| Try{raise RuntimeError}}
+    case nested_try
+      when Success.new(Failure.new(RuntimeError)) then :ok
+      else fail
+    end
+    case nested_try.flatten
+      when Failure.new(RuntimeError) then :ok
+      else fail
+    end
   end
 end
