@@ -1,5 +1,8 @@
 require_relative '../test/test_helper' # IGNORE
 # IGNORE
+require 'test/unit' # IGNORE
+include Test::Unit::Assertions # IGNORE
+# IGNORE
 # stub functions # IGNORE
 get_from_cache  = Yopt.lift {|email| 'E1W 01' if email == 'alice@mail.com'} # IGNORE
 get_from_db     = Yopt.lift {|email| 'EC1 W1' if email == 'bob@mail.com'} # IGNORE

@@ -44,9 +44,11 @@ none.map {|value| value + 2} # returns None
 When we are not interested in the result of a computation on the optional value, it is a good practice to use `Option#each` rather than `Option#map`. That will make our intention clearer.
 
 ```ruby
-some.each {|value| puts value} # prints 42
-none.each {|value| puts value} # does not print anything
+some.each {|value| puts value} # prints 42 and returns `some`
+none.each {|value| puts value} # does not print anything and returns `none`
 ```
+
+Notice that `#each` returns the calling option thus supporting method chaining.
 
 We can safely retrieve the optional value by passing a default value to `Option#get_or_else`
 
@@ -60,7 +62,7 @@ Notice how we are passing a block rather than an argument. This makes the evalua
 This gives us the possibility to react in a special way to a None value without breaking the API fluency, e.g.
 
 ```ruby
-opt.each {|v| do_something_with(v)}.get_or_else {log_failure}
+<<<<<docs/each_chaining.rb
 ```
 
 We can also filter the optional value depending on how it evaluates against a block via `Option#select`

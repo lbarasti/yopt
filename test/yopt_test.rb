@@ -149,7 +149,7 @@ describe 'Some' do
     Some.new(41).collect(&increase_if_odd).get.must_equal 42
   end
   it 'should return `Option`s on selected `Enumerable` methods' do
-    @some.each{|x| x + 1}.must_equal [@some.get]
+    @some.each{|x| x + 1}.must_equal @some
     predicate = -> (x) {x > 0}
     @some.any?(&predicate).must_equal true
     @some.all?(&predicate).must_equal true
@@ -219,7 +219,7 @@ describe 'None' do
     None.flatten.must_equal None
   end
   it 'should be enumerable' do
-    None.each{|x| raise RuntimeError}.must_equal []
+    None.each{|x| raise RuntimeError}.must_equal None
     None.any?{|x| x > 0}.must_equal false
     None.all?{|x| x > 0}.must_equal true
     None.reduce(42){raise RuntimeError}.must_equal 42

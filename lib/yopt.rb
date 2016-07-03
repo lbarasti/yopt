@@ -17,7 +17,9 @@ module Yopt
     end
     singleton_class.send(:alias_method, :[], :call)
     def each &block
-      to_ary.each &block
+      return enum_for(__method__) unless block_given?
+      yield self.get unless empty?
+      return self
     end
     %i(map flat_map select reject collect collect_concat).each do |method|
       define_method method, ->(&block) {
