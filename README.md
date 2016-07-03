@@ -62,8 +62,6 @@ Notice how we are passing a block rather than an argument. This makes the evalua
 This gives us the possibility to react in a special way to a None value without breaking the API fluency, e.g.
 
 ```ruby
-
-
 opt.each {|v| function_with_side_effects(v)}.get_or_else {log_failure}
 ```
 
